@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/workspace2/prueba288/war/WEB-INF/lib/jsf-api-2.1.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/workspace2/prueba288/war/WEB-INF/lib/jsf-impl-2.1.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/Desktop/jars GAE + JSF + Objectify/guava-18.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/Downloads/jboss-seam-2.3.1.Final-dist/jboss-seam-2.3.1.Final/lib/el-api.jar"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/Downloads/jboss-seam-2.3.1.Final-dist/jboss-seam-2.3.1.Final/lib/jboss-el.jar"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/Downloads/jboss-seam-2.3.1.Final-dist/jboss-seam-2.3.1.Final/lib/jboss-el-api_2.2_spec.jar"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/nacho/Desktop/jars GAE + JSF + Objectify/objectify-4.0b1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/el-api.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-18.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jboss-el-api_2.2_spec.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jboss-el.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jsf-api-2.1.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jsf-impl-2.1.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/objectify-4.0b1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

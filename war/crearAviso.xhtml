@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Nuevo aviso</title>
+        <script type="text/javascript" src="js/geo.js"></script>
+    </h:head>
+    
+    <h:body>
+        <h:form id="form">
+            Fecha de creación: <h:inputText a:placeholder="dd" maxlength="2" value="#{controlBean.dia}"/><h:inputText a:placeholder="mm" maxlength="2" value="#{controlBean.mes}"/><h:inputText a:placeholder="aaaa" maxlength="4" value="#{controlBean.anyo}"/><br/>
+            Ubicación: <h:inputText value="#{controlBean.ubicacion}"/><br/>
+            Observaciones: <h:inputText value="#{controlBean.observaciones}"/><br/>
+            Posicionamiento GPS: <h:inputText id ="lat" a:placeholder="Latitud" value="#{controlBean.latitud}"/><h:inputText id="lon" a:placeholder="Longitud" value="#{controlBean.longitud}"/><br/>
+            <div id="image" />
+            <h:commandButton type="button"  value="obtener geolocalizacion" onclick="getLocation();" />
+            <h:commandButton value="Guardar" action="#{controlBean.doGuardar()}"/>
+        </h:form>
+           
+    </h:body> 
+    
+</html>
+

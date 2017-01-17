@@ -24,6 +24,7 @@
     	<h:panelGroup layout="block" id="content">
     		<h2>Todos los avisos</h2>
 	        <h:form>
+	        	<h:outputText value="Puedes editar los avisos desde la sección 'Mis avisos' (click en tu usuario en la barra superior)." rendered="#{not empty controlBean.listaAvisos}" />
 				<h:dataTable value="#{controlBean.listaAvisos}" var="aviso"  border="2"  cellspacing="2" class="table" rendered="#{not empty controlBean.listaAvisos}">
 					<h:column headerClass="tableHeader">
 						<f:facet name="header">

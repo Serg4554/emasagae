@@ -151,12 +151,14 @@ public class ControlBean implements Serializable {
 	}
 	
 	public List<Aviso> getAllAvisos() {
-		return new ArrayList<>(ofy().load().type(Aviso.class).order("fechaCreacion").list());
+		return new ArrayList<>(ofy().load().type(Aviso.class).list());
 	}
 	
 	public List<Aviso> getAllAvisos(Usuario usuario) {
 		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
-		return new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list());
+		ArrayList<Aviso> avisos = new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).list());
+		
+		return avisos;
 	}
 
 	private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
@@ -185,6 +187,10 @@ public class ControlBean implements Serializable {
 	
 	public String doNuevoAviso() {
 		error = "";
+		calle = "";
+		numero = "";
+		codigoPostal = "";
+		descripcion = "";
 		avisoSeleccionado = new Aviso();
 		
 		return "editarAviso?faces-redirect=true";
@@ -343,7 +349,6 @@ public class ControlBean implements Serializable {
 		googleToken = "";
 		emailUsuario = "";
 		listaAvisosUsuario = null;
-	    FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	    
 	    return "index?faces-redirect=true";
 	}

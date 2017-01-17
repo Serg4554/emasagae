@@ -12,6 +12,8 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <!-- Compiled and minified Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+        <!-- Bootstrap social icons plugin -->
+        <link rel="stylesheet" href="includes/bootstrap-social-icons/bootstrap-social.css" />
         <!-- Compiled and minified Bootstrap JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <!-- Font Awesome -->
@@ -20,8 +22,9 @@
     <h:body>
     	<ui:include src="/includes/header.xhtml" />
     	<h:panelGroup layout="block" id="content">
+    		<h2>Todos los avisos</h2>
 	        <h:form>
-				<h:dataTable value="#{controlBean.listaAvisos}" var="aviso"  border="2"  cellspacing="2" class="table">
+				<h:dataTable value="#{controlBean.listaAvisos}" var="aviso"  border="2"  cellspacing="2" class="table" rendered="#{not empty controlBean.listaAvisos}">
 					<h:column headerClass="tableHeader">
 						<f:facet name="header">
 							Fecha Creación
@@ -43,6 +46,11 @@
 						<h:commandLink action="#{controlBean.verAviso(aviso)}" value="#{aviso.calle}, #{aviso.numero}, #{aviso.codigoPostal}"/>
 					</h:column>
 				</h:dataTable>
+				
+				<h:panelGroup layout="block" rendered="#{empty controlBean.listaAvisos}">
+					<h4>No existe ningún aviso en el sistema</h4>
+				</h:panelGroup>
+				
 				<h:commandButton action="#{controlBean.doNuevoAviso()}" value="Crear Aviso" class="btn btn-success" />
 			</h:form>
 		</h:panelGroup>

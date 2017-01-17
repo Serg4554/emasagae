@@ -1,22 +1,39 @@
 package com;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.googlecode.objectify.Key;
 import static com.OfyHelper.ofy;
 import com.googlecode.objectify.annotation.Load;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 @ManagedBean
 @SessionScoped
 public class ControlBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
+	private final String GOOGLE_ID = "893681487329-8djeugqf5ahn7t55b8dpnlnq466v05uf.apps.googleusercontent.com";
+    private final String GOOGLE_SECRET = "uV0DD-f1y2AERZ4RqR0pNNo3";
+    
 	@Load
 	Aviso avisoSeleccionado;
 
@@ -29,17 +46,23 @@ public class ControlBean implements Serializable {
 	String descripcion;
 	String emailUsuario;
 	String error;
+	String googleID;
+	String googleToken;
 	List<Aviso> listaAvisos;
+	List<Aviso> listaAvisosUsuario;
 	List<Operacion> listaOperaciones;
 
 	public ControlBean() {
 	}
 	
 	@PostConstruct
-    public void init(){
+    public void init() {
 		error = "";
 		usuarioActual = null;
 		avisoSeleccionado = null;
+		googleID = "";
+		googleToken = "";
+		emailUsuario = "";
 		listaAvisos = getAllAvisos();
     }
 
@@ -111,6 +134,14 @@ public class ControlBean implements Serializable {
 		this.listaAvisos = listaAvisos;
 	}
 
+	public List<Aviso> getListaAvisosUsuario() {
+		return listaAvisosUsuario;
+	}
+
+	public void setListaAvisosUsuario(List<Aviso> listaAvisosUsuario) {
+		this.listaAvisosUsuario = listaAvisosUsuario;
+	}
+
 	public List<Operacion> getListaOperaciones() {
 		return listaOperaciones;
 	}
@@ -118,30 +149,14 @@ public class ControlBean implements Serializable {
 	public void setListaOperaciones(List<Operacion> listaOperaciones) {
 		this.listaOperaciones = listaOperaciones;
 	}
-
-	public void comprobarUsuario() {
-		Key<Usuario> usuario = Key.create(Usuario.class, emailUsuario);
-
-		usuarioActual = ofy().load().key(usuario).get();
-		if (usuarioActual == null) {
-			usuarioActual = new Usuario();
-			usuarioActual.setEmail(emailUsuario);
-			ofy().save().entity(usuarioActual).now();
-		}
-
-	}
 	
 	public List<Aviso> getAllAvisos() {
-		List<Aviso> avisos;
-		
-		if(usuarioActual == null) {
-			avisos = new ArrayList<>(ofy().load().type(Aviso.class).list());
-		} else {
-			Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
-			avisos = new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list());
-		}
-		
-		return avisos;
+		return new ArrayList<>(ofy().load().type(Aviso.class).order("fechaCreacion").list());
+	}
+	
+	public List<Aviso> getAllAvisos(Usuario usuario) {
+		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
+		return new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list());
 	}
 
 	private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
@@ -227,4 +242,107 @@ public class ControlBean implements Serializable {
 		return "index";
 	}
 
+	public void doGoogleLogin() {
+		try {
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+
+			String code = request.getParameter("code");
+
+			if (code != null && !code.equals("")) {
+				URL url;
+				URLConnection con;
+				BufferedReader in;
+				String content, linea;
+				JSONObject tokenResult, infoResult;
+
+				url = new URL("https://www.googleapis.com/oauth2/v4/token");
+				con = url.openConnection();
+				String urlParameters = "client_id=" + GOOGLE_ID
+						+ "&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Ffaces%2FloginSuccess.xhtml&client_secret=" + GOOGLE_SECRET + "&grant_type=authorization_code&code=" + code;
+				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+				int postDataLength = postData.length;
+
+				con.setDoOutput(true);
+				con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				con.setRequestProperty("charset", "utf-8");
+				con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+				con.setUseCaches(false);
+
+				try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+					wr.write(postData);
+				}
+
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+				content = "";
+				while ((linea = in.readLine()) != null) {
+					content += linea;
+				}
+				tokenResult = new JSONObject(content);
+
+				if (tokenResult.getString("access_token") != null
+						&& !tokenResult.getString("access_token").equals("")) {
+					url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token="
+							+ tokenResult.getString("access_token"));
+					con = url.openConnection();
+					in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+					content = "";
+					while ((linea = in.readLine()) != null) {
+						content += linea;
+					}
+					infoResult = new JSONObject(content);
+
+					this.googleID = infoResult.getString("id");
+					this.googleToken = tokenResult.getString("access_token");
+					this.emailUsuario = infoResult.has("email") ? infoResult.getString("email") : "sin@email.com";
+				} else {
+					try {
+						ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+						context.redirect(context.getRequestContextPath() + "/");
+					} catch (IOException ex) {
+						Logger.getLogger(ControlBean.class.getName()).log(Level.SEVERE, null, ex);
+					}
+				}
+			} else {
+				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+				context.redirect(context.getRequestContextPath() + "/");
+			}
+		} catch (MalformedURLException ex) {
+			Logger.getLogger(ControlBean.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException | JSONException | IllegalStateException ex) {
+			Logger.getLogger(ControlBean.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
+		if(!googleID.isEmpty() && !googleToken.isEmpty() && !emailUsuario.isEmpty()) {
+			Key<Usuario> usuario = Key.create(Usuario.class, emailUsuario);
+
+			usuarioActual = ofy().load().key(usuario).get();
+			if (usuarioActual == null) {
+				usuarioActual = new Usuario(emailUsuario);
+				ofy().save().entity(usuarioActual).now();
+			}
+			listaAvisosUsuario = getAllAvisos(usuarioActual);
+		}
+		
+		try {
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			context.redirect(context.getRequestContextPath() + "/");
+		} catch (IOException ex) {
+			Logger.getLogger(ControlBean.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+	
+	public String doLogout() {
+		error = "";
+		usuarioActual = null;
+		avisoSeleccionado = null;
+		googleID = "";
+		googleToken = "";
+		emailUsuario = "";
+		listaAvisosUsuario = null;
+	    FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+	    
+	    return "index?faces-redirect=true";
+	}
 }

@@ -14,9 +14,9 @@ public class Usuario implements Serializable {
     @Id
     @Index
     private String email;
-    
+
     public Usuario() {
-    	//Usuario vacío
+        //Usuario vacío
     }
 
     public Usuario(String email) {

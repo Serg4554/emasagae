@@ -18,22 +18,23 @@ public class Aviso implements Serializable {
     private Long id;
     
     @Parent
-    private Key<Usuario> originador;
+    private Key<Usuario> tOriginador;;
     
+    private Usuario originador;
     private Date fechaCreacion;
     private String descripcion;
     private String calle;
     private int numero;
     private int codigoPostal;
     private Collection<Key<Operacion>> operacionesCollection;
-    private Collection<Key<Aviso>> avisosCollection;
 
     public Aviso() {
     	//Aviso vacío
     }
     
     public Aviso(Usuario originador, Date fechaCreacion, String calle, int numero, int codigoPostal) {
-        this.originador = Key.create(Usuario.class, originador.getEmail());
+    	this.originador = originador;
+        this.tOriginador = Key.create(Usuario.class, originador.getEmail());
         this.fechaCreacion = fechaCreacion;
         this.calle = calle;
         this.numero = numero;
@@ -48,12 +49,20 @@ public class Aviso implements Serializable {
 		this.id = id;
 	}
 
-	public Key<Usuario> getOriginador() {
+	public Usuario getOriginador() {
 		return originador;
 	}
 
-	public void setOriginador(Key<Usuario> originador) {
+	public void setOriginador(Usuario originador) {
 		this.originador = originador;
+	}
+
+	public Key<Usuario> getTOriginador() {
+		return tOriginador;
+	}
+
+	public void setTOriginador(Key<Usuario> tOriginador) {
+		this.tOriginador = tOriginador;
 	}
 
 	public Date getFechaCreacion() {
@@ -102,14 +111,6 @@ public class Aviso implements Serializable {
 
 	public void setOperacionesCollection(Collection<Key<Operacion>> operacionesCollection) {
 		this.operacionesCollection = operacionesCollection;
-	}
-
-	public Collection<Key<Aviso>> getAvisosCollection() {
-		return avisosCollection;
-	}
-
-	public void setAvisosCollection(Collection<Key<Aviso>> avisosCollection) {
-		this.avisosCollection = avisosCollection;
 	}
 
 	@Override

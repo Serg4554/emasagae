@@ -29,7 +29,7 @@ public class ControlBean implements Serializable {
 	String descripcion;
 	String emailUsuario;
 	String error;
-	List<Aviso> listaAvisosUsuario;
+	List<Aviso> listaAvisos;
 	List<Operacion> listaOperaciones;
 
 	public ControlBean() {
@@ -38,6 +38,9 @@ public class ControlBean implements Serializable {
 	@PostConstruct
     public void init(){
 		error = "";
+		usuarioActual = null;
+		avisoSeleccionado = null;
+		listaAvisos = getAllAvisos();
     }
 
 	public Aviso getAvisoSeleccionado() {
@@ -100,12 +103,12 @@ public class ControlBean implements Serializable {
 		return error;
 	}
 
-	public List<Aviso> getListaAvisosUsuario() {
-		return listaAvisosUsuario;
+	public List<Aviso> getListaAvisos() {
+		return listaAvisos;
 	}
 
-	public void setListaAvisosUsuario(List<Aviso> listaAvisosUsuario) {
-		this.listaAvisosUsuario = listaAvisosUsuario;
+	public void setListaAvisos(List<Aviso> listaAvisos) {
+		this.listaAvisos = listaAvisos;
 	}
 
 	public List<Operacion> getListaOperaciones() {
@@ -128,17 +131,17 @@ public class ControlBean implements Serializable {
 
 	}
 	
-	public String mostrarAvisos() {
-		comprobarUsuario();
+	public List<Aviso> getAllAvisos() {
+		List<Aviso> avisos;
 		
-		// obtenemos la lista de avisos del usuario
-		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
-		listaAvisosUsuario = ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list();
-		if(listaAvisosUsuario == null) {
-			listaAvisosUsuario = new ArrayList<Aviso>();
+		if(usuarioActual == null) {
+			avisos = new ArrayList<>(ofy().load().type(Aviso.class).list());
+		} else {
+			Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
+			avisos = new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list());
 		}
 		
-		return "mostrarAvisos";
+		return avisos;
 	}
 
 	private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
@@ -159,24 +162,24 @@ public class ControlBean implements Serializable {
 			listaOperaciones = getListaOperacionesAviso(aviso);
 			redirect = "detalleAviso";
 		} else {
-			redirect = "mostrarAvisos";
+			redirect = "index";
 		}
 		
 		return redirect;
 	}
-
-	public String crearAviso() {
+	
+	public String doNuevoAviso() {
 		error = "";
-		return "crearAviso";
-	}
-
-	public String doGuardar() {
-		error = "";
-
 		avisoSeleccionado = new Aviso();
 		
-		Key<Usuario> usuario = Key.create(Usuario.class, emailUsuario);
-		avisoSeleccionado.setOriginador(usuario);
+		return "editarAviso?faces-redirect=true";
+	}
+
+	public String doGuardarAviso() {
+		error = "";
+		
+		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
+		avisoSeleccionado.setTOriginador(tUsuario);
 		
 		avisoSeleccionado.setFechaCreacion(new Date());
 
@@ -196,7 +199,7 @@ public class ControlBean implements Serializable {
 			}
 		} else {
 			error = "Debe especificar un número";
-			return "crearAviso";
+			return "editarAviso";
 		}
 
 		if (codigoPostal != null && !codigoPostal.isEmpty()) {
@@ -204,24 +207,24 @@ public class ControlBean implements Serializable {
 				avisoSeleccionado.setCodigoPostal(Integer.parseInt(codigoPostal));
 			} catch(NumberFormatException e) {
 				error = "El código postal debe ser numérico";
-				return "crearAviso";
+				return "editarAviso";
 			}
 		} else {
 			error = "Debe especificar un código postal";
-			return "crearAviso";
+			return "editarAviso";
 		}
 		
 		if (descripcion != null && !descripcion.isEmpty()) {
 			avisoSeleccionado.setDescripcion(descripcion);
 		} else {
 			error = "Debe especificar una descripción";
-			return "crearAviso";
+			return "editarAviso";
 		}
 		
 		ofy().save().entity(avisoSeleccionado).now();
-		listaAvisosUsuario.add(avisoSeleccionado);
+		listaAvisos.add(avisoSeleccionado);
 		
-		return this.mostrarAvisos();
+		return "index";
 	}
 
 }

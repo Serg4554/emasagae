@@ -2,70 +2,63 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:m="http://code.google.com/p/gmaps4jsf/"
-      >
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
-        <title>Aviso</title>
+        <title>Detalles de aviso</title>
+        <link rel="stylesheet" type="text/css" href="includes/style/main.css" />
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!-- Compiled and minified Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+        <!-- Compiled and minified Bootstrap JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <!-- Font Awesome -->
+        <script src="https://use.fontawesome.com/26be38d20f.js"></script>
     </h:head>
     <h:body>
-       
-        
-        <h1>Detalle del Aviso: #{controlBean.avisoSeleccionado.id}</h1>
-        
-        Fecha de creacion: <h:outputText value="#{controlBean.avisoSeleccionado.fechacreacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText><br/>
-        ubicación: #{controlBean.avisoSeleccionado.ubicacion}<br/>
-        estado: #{controlBean.avisoSeleccionado.estado}<br/>
-        observaciones: <br/>
-        #{controlBean.avisoSeleccionado.observaciones}<br/>
-        ubicación técnica: #{controlBean.avisoSeleccionado.ubicacionTecnica}<br/>
-        prioridad: #{controlBean.avisoSeleccionado.prioridad}<br/>
-        inicio de reparación: <h:outputText value="#{controlBean.avisoSeleccionado.inicioReparacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText><br/>
-        fin de reparación: <h:outputText value="#{controlBean.avisoSeleccionado.finReparacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText><br/>
-        posición GPS: #{controlBean.avisoSeleccionado.posGPS}<br/>
-        <script type="text/javascript"
-                charset="" src="https://maps.googleapis.com/maps/api/js?sensor=true&amp;key=AIzaSyB2RpStrikgb975QOCkSfTcrt9ufzlVeBU">
-        </script>
-        <h:form id="form">
-            <m:map width="500" height="450px" latitude="#{controlBean.latitudGPS}" longitude="#{controlBean.longitudGPS}"  enableScrollWheelZoom="true" >
-                <m:marker>
-                    <m:htmlInformationWindow htmlText="ID: #{controlBean.avisoSeleccionado.id}&lt;br/&gt; prioridad:#{controlBean.avisoSeleccionado.prioridad}&lt;br/&gt; tipo: #{controlBean.avisoSeleccionado.tipo}&lt;br/&gt; observaciones: #{controlBean.avisoSeleccionado.observaciones}"/>
-                </m:marker>
-            </m:map><br/>
-            <h:commandButton value="volver" action="#{controlBean.mostrarAvisos()}"/><br/>
-        </h:form>
-        tipo: #{controlBean.avisoSeleccionado.tipo}<br/>
-        operaciones:<br/>
-        <h:dataTable value="#{controlBean.listaOperaciones}" var="operacion" border="2"  cellspacing="2" >
-                            <h:column>
-                                <f:facet name="header">
-                                    id
-                                </f:facet>
-                                #{operacion.id}
-                            </h:column>     
-                            <h:column>
-                                <f:facet name="header">
-                                    descripcion
-                                </f:facet>
-                                #{operacion.descripcion}
-                            </h:column>  
-                            <h:column>
-                                <f:facet name="header">
-                                    fecha
-                                </f:facet>
-                                <h:outputText value="#{operacion.fecha}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText>
-                            </h:column>  
-        </h:dataTable>
-        
-        
+    	<ui:include src="/includes/header.xhtml" />
+        <h:panelGroup layout="block" id="content">
+        	<b>ID:</b> #{controlBean.avisoSeleccionado.id}<br/>
+        	<b>Email del originador:</b> #{controlBean.avisoSeleccionado.originador.email}<br/>
+        	<b>Fecha de creacion:</b>
+        	<h:outputText value="#{controlBean.avisoSeleccionado.fechaCreacion}">
+        		<f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
+			</h:outputText><br/>
+			<b>Calle:</b> #{controlBean.avisoSeleccionado.calle}<br/>
+			<b>Número:</b> #{controlBean.avisoSeleccionado.numero}<br/>
+			<b>Código postal:</b> #{controlBean.avisoSeleccionado.codigoPostal}<br/>
+			<br/>
+			<b>Descripción:</b><br/>
+			#{controlBean.avisoSeleccionado.descripcion}<br/>
+			
+			
+			<h3>Operaciones</h3>
+				<h:panelGroup layout="block" rendered="#{not empty controlBean.listaOperaciones}">
+				<h:dataTable value="#{controlBean.listaOperaciones}" var="operacion" border="2"  cellspacing="2"  class="table">   
+					<h:column headerClass="tableHeader">
+						<f:facet name="header">
+							Descripción
+						</f:facet>
+						#{operacion.descripcion}
+					</h:column>  
+					<h:column headerClass="tableHeader">
+						<f:facet name="header">
+							Fecha
+						</f:facet>
+						<h:outputText value="#{operacion.fecha}" >
+							<f:convertDateTime pattern="dd-MM-yyyy HH:mm" timeZone="CET" />
+						</h:outputText>
+					</h:column>  
+	        	</h:dataTable>
+	        </h:panelGroup>
+	        <h:panelGroup layout="block" rendered="#{empty controlBean.listaOperaciones}">
+	        	No hay operaciones para este aviso
+	        </h:panelGroup> <br/>
+	        <br/>
+	        <h:form>
+				<h:commandButton action="index?faces-redirect=true" value="Volver" class="btn btn-default" />
+			</h:form>
+        </h:panelGroup>
     </h:body>
 </html>
 

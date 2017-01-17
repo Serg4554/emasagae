@@ -8,93 +8,31 @@ xmlns:f="http://java.sun.com/jsf/core"
     </h:head>
     <h:body>
         <h2>Lista de avisos de #{controlBean.emailUsuario}</h2>
-        <f:view>
-            <h:form>
-                <h:commandButton action="#{controlBean.crearAviso()}" value="Crear Aviso"/><br/><br/>
-                <h:dataTable value="#{controlBean.listaAvisosUsuario}" var="aviso"  border="2"  cellspacing="2">
-                    <h:column>
-                        <f:facet name="header">
-                            ID
-                        </f:facet>
-                        #{aviso.id}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Fecha Creación
-                        </f:facet>
-                        <h:outputText value="#{aviso.fechacreacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Ubicacion
-                        </f:facet>
-                        #{aviso.ubicacion}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Estado
-                        </f:facet>
-                        #{aviso.estado}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Observaciones
-                        </f:facet>
-                        #{aviso.observaciones}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Ubicacion Técnica
-                        </f:facet>
-                        #{aviso.ubicacionTecnica}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Prioridad
-                        </f:facet>
-                        #{aviso.prioridad}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Inicio Reparación
-                        </f:facet>
-                        <h:outputText value="#{aviso.inicioReparacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Fin Reparación
-                        </f:facet>
-                        <h:outputText value="#{aviso.finReparacion}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Posición GPS
-                        </f:facet>
-                        #{aviso.posGPS}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Tipo
-                        </f:facet>
-                        #{aviso.tipo}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            Ver Detalles
-                        </f:facet>
-                        <h:commandButton action="#{controlBean.verAviso(aviso)}" value="Detalles"/>
-                        
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-        </f:view>
-
+		<h:form>
+			<h:dataTable value="#{controlBean.listaAvisosUsuario}" var="aviso"  border="2"  cellspacing="2">
+				<h:column>
+					<f:facet name="header">
+						ID
+					</f:facet>
+					#{aviso.id}
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						Fecha Creación
+					</f:facet>
+					<h:outputText value="#{aviso.fechaCreacion}" >
+						<f:convertDateTime pattern="dd-MM-yyyy HH:mm" timeZone="CET" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						Dirección
+					</f:facet>
+					<h:commandLink action="#{controlBean.verAviso(aviso)}" value="#{aviso.calle}, #{aviso.numero}, #{aviso.codigoPostal}"/>
+				</h:column>
+			</h:dataTable>
+			<h:commandButton action="#{controlBean.crearAviso()}" value="Crear Aviso"/><br/><br/>
+		</h:form>
     </h:body>
 </html>
 

@@ -1,181 +1,118 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
 
-/**
- *
- * @author nacho
- */
 @Entity
-
 public class Aviso implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     private Long id;
-
-    private Date fechacreacion;
-    @Index
-    private String ubicacion;
-
-    private String estado;
-
-    private String observaciones;
-
-    private String ubicacionTecnica;
-    private Integer prioridad;
-    private Date inicioReparacion;
-    private Date finReparacion;
-    private String posGPS;
-    private String tipo;
-    private Collection<Key<Operacion>> operacionCollection;
-    private Collection<Key<Aviso>> avisoCollection;
-    private Aviso avisoIdDuplicado;
+    
     @Parent
-    private Key<Usuario> theUser;
+    private Key<Usuario> originador;
+    
+    private Date fechaCreacion;
+    private String descripcion;
+    private String calle;
+    private int numero;
+    private int codigoPostal;
+    private Collection<Key<Operacion>> operacionesCollection;
+    private Collection<Key<Aviso>> avisosCollection;
 
     public Aviso() {
+    	//Aviso vacío
     }
-
-    public Key<Usuario> getTheUser() {
-        return theUser;
-    }
-
-    public void setTheUser(Key<Usuario> theUser) {
-        this.theUser = theUser;
-    }
-
-    public Aviso(Long id) {
-        this.id = id;
-    }
-
-    public Aviso(Long id, Date fechacreacion, String ubicacion, String estado, String observaciones) {
-        this.id = id;
-        this.fechacreacion = fechacreacion;
-        this.ubicacion = ubicacion;
-        this.estado = estado;
-        this.observaciones = observaciones;
-    }
-    public Aviso(Usuario usuario,Long id, Date fechacreacion, String ubicacion, String estado, String observaciones){
-        this(id,fechacreacion,ubicacion,estado,observaciones);
-        if(usuario != null){
-            theUser = Key.create(Usuario.class, usuario.getEmail());
-        }
-        else{
-            Key.create(Usuario.class,"default");
-        }
+    
+    public Aviso(Usuario originador, Date fechaCreacion, String calle, int numero, int codigoPostal) {
+        this.originador = Key.create(Usuario.class, originador.getEmail());
+        this.fechaCreacion = fechaCreacion;
+        this.calle = calle;
+        this.numero = numero;
+        this.codigoPostal = codigoPostal;
     }
 
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Date getFechacreacion() {
-        return fechacreacion;
-    }
+	public Key<Usuario> getOriginador() {
+		return originador;
+	}
 
-    public void setFechacreacion(Date fechacreacion) {
-        this.fechacreacion = fechacreacion;
-    }
+	public void setOriginador(Key<Usuario> originador) {
+		this.originador = originador;
+	}
 
-    public String getUbicacion() {
-        return ubicacion;
-    }
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
 
-    public String getEstado() {
-        return estado;
-    }
+	public String getDescripcion() {
+		return descripcion;
+	}
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 
-    public String getObservaciones() {
-        return observaciones;
-    }
+	public String getCalle() {
+		return calle;
+	}
 
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
 
-    public String getUbicacionTecnica() {
-        return ubicacionTecnica;
-    }
+	public int getNumero() {
+		return numero;
+	}
 
-    public void setUbicacionTecnica(String ubicacionTecnica) {
-        this.ubicacionTecnica = ubicacionTecnica;
-    }
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
 
-    public Integer getPrioridad() {
-        return prioridad;
-    }
+	public int getCodigoPostal() {
+		return codigoPostal;
+	}
 
-    public void setPrioridad(Integer prioridad) {
-        this.prioridad = prioridad;
-    }
+	public void setCodigoPostal(int codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}	
 
-    public Date getInicioReparacion() {
-        return inicioReparacion;
-    }
+	public Collection<Key<Operacion>> getOperacionesCollection() {
+		return operacionesCollection;
+	}
 
-    public void setInicioReparacion(Date inicioReparacion) {
-        this.inicioReparacion = inicioReparacion;
-    }
+	public void setOperacionesCollection(Collection<Key<Operacion>> operacionesCollection) {
+		this.operacionesCollection = operacionesCollection;
+	}
 
-    public Date getFinReparacion() {
-        return finReparacion;
-    }
+	public Collection<Key<Aviso>> getAvisosCollection() {
+		return avisosCollection;
+	}
 
-    public void setFinReparacion(Date finReparacion) {
-        this.finReparacion = finReparacion;
-    }
+	public void setAvisosCollection(Collection<Key<Aviso>> avisosCollection) {
+		this.avisosCollection = avisosCollection;
+	}
 
-    public String getPosGPS() {
-        return posGPS;
-    }
-
-    public void setPosGPS(String posGPS) {
-        this.posGPS = posGPS;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public Aviso getAvisoIdDuplicado() {
-        return avisoIdDuplicado;
-    }
-
-    public void setAvisoIdDuplicado(Aviso avisoIdDuplicado) {
-        this.avisoIdDuplicado = avisoIdDuplicado;
-    }
-
-
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

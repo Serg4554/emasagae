@@ -6,21 +6,19 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Nuevo aviso</title>
-        <script type="text/javascript" src="js/geo.js"></script>
     </h:head>
     
     <h:body>
         <h:form id="form">
-            Fecha de creación: <h:inputText a:placeholder="dd" maxlength="2" value="#{controlBean.dia}"/><h:inputText a:placeholder="mm" maxlength="2" value="#{controlBean.mes}"/><h:inputText a:placeholder="aaaa" maxlength="4" value="#{controlBean.anyo}"/><br/>
-            Ubicación: <h:inputText value="#{controlBean.ubicacion}"/><br/>
-            Observaciones: <h:inputText value="#{controlBean.observaciones}"/><br/>
-            Posicionamiento GPS: <h:inputText id ="lat" a:placeholder="Latitud" value="#{controlBean.latitud}"/><h:inputText id="lon" a:placeholder="Longitud" value="#{controlBean.longitud}"/><br/>
-            <div id="image" />
-            <h:commandButton type="button"  value="obtener geolocalizacion" onclick="getLocation();" />
+        	<h3>Dirección</h3>
+        	Calle: <h:inputText value="#{controlBean.calle}" /><br/>
+			Número: <h:inputText value="#{controlBean.numero}" /><br/>
+			Código postal: <h:inputText value="#{controlBean.codigoPostal}" /><br/>
+			
+			<h3>Descripción</h3>
+			<h:inputTextarea value="#{controlBean.descripcion}"></h:inputTextarea><br/>
             <h:commandButton value="Guardar" action="#{controlBean.doGuardar()}"/>
         </h:form>
-           
-    </h:body> 
-    
+    </h:body>
 </html>
 

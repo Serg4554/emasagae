@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com;
 
 import com.googlecode.objectify.Key;
@@ -12,90 +7,74 @@ import com.googlecode.objectify.annotation.Parent;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- *
- * @author nacho
- */
+
 @Entity
 public class Operacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
-    private String id;
-    private String descripcion;
-    private Date fecha;
+    private Long id;
+    
     @Parent
     private Key<Aviso> tAviso;
-    private Key<Usuario> theUser;
+
+    private Date fecha;
+    private String descripcion;
+    private Key<Usuario> originador;
 
     public Operacion() {
-    }
-
-    public Key<Aviso> getAviso() {
-        return tAviso;
-    }
-
-    public void setAviso(Key<Aviso> aviso) {
-        this.tAviso = aviso;
-    }
-
-    public Key<Usuario> getTheUser() {
-        return theUser;
-    }
-
-    public void setTheUser(Key<Usuario> theUser) {
-        this.theUser = theUser;
-    }
-
-    public Operacion(String id) {
-        this.id = id;
-    }
-
-    public Operacion(String id, String descripcion, Date fecha) {
-        this.id = id;
-        this.descripcion = descripcion;
-        this.fecha = fecha;
+    	//Operación vacía
     }
     
-    public Operacion(Aviso aviso, Usuario usuario,String id, String descripcion, Date fecha){
-        this(id,descripcion,fecha);
-        if(aviso != null){
-            tAviso = Key.create(Aviso.class, aviso.getId());
-        }
-        if(usuario != null){
-            theUser = Key.create(Usuario.class, usuario.getEmail());
-        }
-        else{
-            theUser = Key.create(Usuario.class, "default");
-        }
-    
+    public Operacion(Aviso aviso, Usuario originador, String descripcion, Date fecha) {
+    	this.tAviso = Key.create(Aviso.class, aviso.getId());
+    	this.originador = Key.create(Usuario.class, originador.getEmail());
+    	this.descripcion = descripcion;
+    	this.fecha = fecha;
     }
 
-    public String getId() {
-        return id;
-    }
+    public Long getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+	public Key<Aviso> getTAviso() {
+		return tAviso;
+	}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+	public void setTAviso(Key<Aviso> tAviso) {
+		this.tAviso = tAviso;
+	}
 
-    public Date getFecha() {
-        return fecha;
-    }
+	public Date getFecha() {
+		return fecha;
+	}
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
 
-    @Override
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Key<Usuario> getOriginador() {
+		return originador;
+	}
+
+	public void setOriginador(Key<Usuario> originador) {
+		this.originador = originador;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

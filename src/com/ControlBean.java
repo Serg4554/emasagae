@@ -1,319 +1,227 @@
 package com;
- 
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 
 import com.googlecode.objectify.Key;
-
 import static com.OfyHelper.ofy;
 import com.googlecode.objectify.annotation.Load;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import java.util.List;
-
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.servlet.ServletContextEvent;
 
-
-
-//import operacionws.Operacion;
-//import operacionws.OperacionWS_Service;
-
-
-/**
- *
- * @author shiba
- */
 @ManagedBean
 @SessionScoped
 public class ControlBean implements Serializable {
-
 	
-
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Load
 	Aviso avisoSeleccionado;
-    String latitud, longitud, error, ubicacion, dia, mes, anyo, observaciones;
-    String emailUsuario;
-    List<Aviso> listaAvisosUsuario;
-    List<Operacion> listaOperaciones;
-    @Load
-    Usuario usuarioActual;
 
-    String latitudGPS;
-    String longitudGPS;
-    
+	@Load
+	Usuario usuarioActual;
+	
+	String calle;
+	String numero;
+	String codigoPostal;
+	String descripcion;
+	String emailUsuario;
+	String error;
+	List<Aviso> listaAvisosUsuario;
+	List<Operacion> listaOperaciones;
 
-    /**
-     * Creates a new instance of ControlBean
-     */
-    public ControlBean() {
+	public ControlBean() {
+	}
+	
+	@PostConstruct
+    public void init(){
+		error = "";
     }
 
-    @PostConstruct
-    public void Init(){
-    	latitud = "";
-    	longitud = ""; 
-    	error = "";
-    	ubicacion = "";
-    	dia = "";
-    	mes = "";
-    	anyo = "";
-    	observaciones = "";
-    	latitudGPS = "";
-    	longitudGPS = "";
-    }
+	public Aviso getAvisoSeleccionado() {
+		return avisoSeleccionado;
+	}
 
+	public void setAvisoSeleccionado(Aviso avisoSeleccionado) {
+		this.avisoSeleccionado = avisoSeleccionado;
+	}
 
-    public String getLatitudGPS() {
-        return latitudGPS;
-    }
+	public Usuario getUsuarioActual() {
+		return usuarioActual;
+	}
 
-    public void setLatitudGPS(String latitudGPS) {
-        this.latitudGPS = latitudGPS;
-    }
+	public void setUsuarioActual(Usuario usuarioActual) {
+		this.usuarioActual = usuarioActual;
+	}
 
-    public String getLongitudGPS() {
-        return longitudGPS;
-    }
+	public String getCalle() {
+		return calle;
+	}
 
-    public void setLongitudGPS(String longitudGPS) {
-        this.longitudGPS = longitudGPS;
-    }
-    public String getLatitud() {
-        return latitud;
-    }
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
 
-    public void setLatitud(String latitud) {
-        this.latitud = latitud;
-    }
+	public String getNumero() {
+		return numero;
+	}
 
-    public String getError() {
-        return error;
-    }
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
 
-    public void setError(String error) {
-        this.error = error;
-    }
+	public String getCodigoPostal() {
+		return codigoPostal;
+	}
 
-    public String getLongitud() {
-        return longitud;
-    }
+	public void setCodigoPostal(String codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
 
-    public String getObservaciones() {
-        return observaciones;
-    }
+	public String getDescripcion() {
+		return descripcion;
+	}
 
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 
-    public void setLongitud(String longitud) {
-        this.longitud = longitud;
-    }
+	public String getEmailUsuario() {
+		return emailUsuario;
+	}
 
-    public String getUbicacion() {
-        return ubicacion;
-    }
+	public void setEmailUsuario(String emailUsuario) {
+		this.emailUsuario = emailUsuario;
+	}
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
+	public String getError() {
+		return error;
+	}
 
-    public String getDia() {
-        return dia;
-    }
+	public List<Aviso> getListaAvisosUsuario() {
+		return listaAvisosUsuario;
+	}
 
-    public void setDia(String dia) {
-        this.dia = dia;
-    }
+	public void setListaAvisosUsuario(List<Aviso> listaAvisosUsuario) {
+		this.listaAvisosUsuario = listaAvisosUsuario;
+	}
 
-    public String getMes() {
-        return mes;
-    }
+	public List<Operacion> getListaOperaciones() {
+		return listaOperaciones;
+	}
 
-    public void setMes(String mes) {
-        this.mes = mes;
-    }
+	public void setListaOperaciones(List<Operacion> listaOperaciones) {
+		this.listaOperaciones = listaOperaciones;
+	}
 
-    public String getAnyo() {
-        return anyo;
-    }
+	public void comprobarUsuario() {
+		Key<Usuario> usuario = Key.create(Usuario.class, emailUsuario);
 
-    public void setAnyo(String anyo) {
-        this.anyo = anyo;
-    }
+		usuarioActual = ofy().load().key(usuario).get();
+		if (usuarioActual == null) {
+			usuarioActual = new Usuario();
+			usuarioActual.setEmail(emailUsuario);
+			ofy().save().entity(usuarioActual).now();
+		}
 
+	}
+	
+	public String mostrarAvisos() {
+		comprobarUsuario();
+		
+		// obtenemos la lista de avisos del usuario
+		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
+		listaAvisosUsuario = ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list();
+		if(listaAvisosUsuario == null) {
+			listaAvisosUsuario = new ArrayList<Aviso>();
+		}
+		
+		return "mostrarAvisos";
+	}
 
-    public Aviso getAvisoSeleccionado() {
-        return avisoSeleccionado;
-    }
+	private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
+		List<Operacion> operaciones = null;
+		if (aviso != null) {
+			Key<Aviso> tAviso = Key.create(Aviso.class, aviso.getId());
+			operaciones = ofy().load().type(Operacion.class).ancestor(tAviso).list();
+		}
+		
+		return operaciones;
+	}
 
-    public void setAvisoSeleccionado(Aviso avisoSeleccionado) {
-        this.avisoSeleccionado = avisoSeleccionado;
-    }
+	public String verAviso(Aviso aviso) {
+		String redirect;
+		
+		if (aviso != null) {
+			avisoSeleccionado = aviso;
+			listaOperaciones = getListaOperacionesAviso(aviso);
+			redirect = "detalleAviso";
+		} else {
+			redirect = "mostrarAvisos";
+		}
+		
+		return redirect;
+	}
 
-    public String getEmailUsuario() {
-        return emailUsuario;
-    }
+	public String crearAviso() {
+		error = "";
+		return "crearAviso";
+	}
 
-    public void setEmailUsuario(String emailUsuario) {
-        this.emailUsuario = emailUsuario;
-    }
+	public String doGuardar() {
+		error = "";
 
-    public List<Aviso> getListaAvisosUsuario() {
-        return listaAvisosUsuario;
-    }
+		avisoSeleccionado = new Aviso();
+		
+		Key<Usuario> usuario = Key.create(Usuario.class, emailUsuario);
+		avisoSeleccionado.setOriginador(usuario);
+		
+		avisoSeleccionado.setFechaCreacion(new Date());
 
-    public void setListaAvisosUsuario(List<Aviso> listaAvisosUsuario) {
-        this.listaAvisosUsuario = listaAvisosUsuario;
-    }
+		if (calle != null && !calle.isEmpty()) {
+			avisoSeleccionado.setCalle(calle);
+		} else {
+			error = "Debe especificar una calle";
+			return "crearAviso";
+		}
 
-    public List<Operacion> getListaOperaciones() {
-        return listaOperaciones;
-    }
+		if (numero != null && !numero.isEmpty()) {
+			try {
+				avisoSeleccionado.setNumero(Integer.parseInt(numero));
+			} catch(NumberFormatException e) {
+				error = "El número debe ser numérico";
+				return "crearAviso";
+			}
+		} else {
+			error = "Debe especificar un número";
+			return "crearAviso";
+		}
 
-    public void setListaOperaciones(List<Operacion> listaOperaciones) {
-        this.listaOperaciones = listaOperaciones;
-    }
+		if (codigoPostal != null && !codigoPostal.isEmpty()) {
+			try {
+				avisoSeleccionado.setCodigoPostal(Integer.parseInt(codigoPostal));
+			} catch(NumberFormatException e) {
+				error = "El código postal debe ser numérico";
+				return "crearAviso";
+			}
+		} else {
+			error = "Debe especificar un código postal";
+			return "crearAviso";
+		}
+		
+		if (descripcion != null && !descripcion.isEmpty()) {
+			avisoSeleccionado.setDescripcion(descripcion);
+		} else {
+			error = "Debe especificar una descripción";
+			return "crearAviso";
+		}
+		
+		ofy().save().entity(avisoSeleccionado).now();
+		listaAvisosUsuario.add(avisoSeleccionado);
+		
+		return this.mostrarAvisos();
+	}
 
-    public Usuario getUsuarioActual() {
-        return usuarioActual;
-    }
-
-    public void setUsuarioActual(Usuario usuarioActual) {
-        this.usuarioActual = usuarioActual;
-    }
-
-    public String mostrarAvisos() {
-    	comprobarUsuario();
-        //obtenemos la lista de avisos del usuario
-        Key<Usuario> user = Key.create(Usuario.class, emailUsuario);
-       listaAvisosUsuario = ofy().load().type(Aviso.class).ancestor(user).list();
-       if(listaAvisosUsuario == null){
-    	   listaAvisosUsuario = new ArrayList<Aviso>();
-       }
-        return "mostrarAvisos";
-        
-        
-        
-    }
-
-    public String verAviso(Aviso aviso) {
-    	if(aviso != null){
-        avisoSeleccionado = aviso;
-        listaOperaciones = getListaOperacionesAviso(aviso);
-        if(avisoSeleccionado.getPosGPS() != null && !avisoSeleccionado.getPosGPS().isEmpty()) {
-            String[] posGPS = avisoSeleccionado.getPosGPS().split(";");
-            latitudGPS = posGPS[0];
-            longitudGPS = posGPS[1];
-        } else {
-            latitudGPS = null;
-            longitudGPS = null;
-        }
-        return "detalleAviso";
-    	}
-    	else{
-    		return"mostrarAvisos";
-    	}
-    }
-
-    private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
-        List<Operacion> res = null;
-        if(aviso != null){
-        Key<Aviso> tAviso = Key.create(Aviso.class, aviso.getId());
-        res = ofy().load().type(Operacion.class).ancestor(tAviso).list();
-        }
-        return res;
-    }
-
-
-    public void comprobarUsuario() {
-        Key<Usuario> theUser = Key.create(Usuario.class, emailUsuario);
-
-            usuarioActual = ofy().load().key(theUser).get();
-            if (usuarioActual == null) {
-                usuarioActual = new Usuario();
-                usuarioActual.setEmail(emailUsuario);
-                usuarioActual.setOperador(false);
-                ofy().save().entity(usuarioActual).now();
-            }
-    
-        
-    }
-
-    public String crearAviso() {
-        error="";
-        return "crearAviso";
-    }
-
-    public String doGuardar() {
-    	Key<Usuario> theUser = Key.create(Usuario.class, emailUsuario);
-        error="";
-        String fecha;
-        avisoSeleccionado = new Aviso();
-        if(!dia.isEmpty() && !mes.isEmpty() && !anyo.isEmpty()){
-            fecha = dia + "-" + mes + "-" + anyo;
-        }else{
-            error="Fecha no v�lida";
-            return "crearAviso";
-        }
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-        formatter.applyPattern("dd-MM-yyyy");
-        if (fecha != null && !fecha.trim().isEmpty()) {
-            try {
-                Date date = formatter.parse(fecha);
-                avisoSeleccionado.setFechacreacion(date);
-            } catch (ParseException ex) {
-                error = "Fecha no v�lida";
-                return "crearAviso";
-            }
-        }
-        if(ubicacion==null || ubicacion.isEmpty()){
-            error="La ubicaci�n no puede ser vac�a";
-            return "crearAviso";
-        }else{
-            avisoSeleccionado.setUbicacion(ubicacion);
-        }
-        if(observaciones==null || observaciones.isEmpty()){
-            error="El campo de observaciones no puede estar vac�o";
-            return "crearAviso";
-        }else{
-            avisoSeleccionado.setObservaciones(observaciones);
-        }
-       /* 
-        if(latitud==null || latitud.isEmpty() || longitud == null || longitud.isEmpty()){
-            error="Los campos del posicionamiento GPS no pueden ser vac�os";
-            return "crearAviso";
-        }else{
-            double lat = Double.parseDouble(latitud);
-            double longi = Double.parseDouble(longitud);
-            avisoSeleccionado.setPosGPS(lat+";"+longi);
-        }
-        */
-        avisoSeleccionado.setPosGPS(1.1+";"+1.1);
-        avisoSeleccionado.setEstado("En espera de confirmacion");
-        avisoSeleccionado.setTheUser(theUser);
-        ofy().save().entity(avisoSeleccionado).now();
-        listaAvisosUsuario.add(avisoSeleccionado);
-        return this.mostrarAvisos();
-    }  
-    
 }

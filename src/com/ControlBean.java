@@ -238,6 +238,8 @@ public class ControlBean implements Serializable {
 		
 		ofy().save().entity(avisoSeleccionado).now();
 		listaAvisos.add(avisoSeleccionado);
+		listaAvisosUsuario.add(avisoSeleccionado);
+		avisoSeleccionado = null;
 		
 		return "index";
 	}

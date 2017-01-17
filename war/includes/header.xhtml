@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://java.sun.com/jsf/passthrough">
+    <h:body>
+        <h:panelGroup layout="block" id="header">
+            <h:link outcome="/index?faces-redirect=true" id="headerLogo">
+                <h:graphicImage value="/includes/images/emasa.png" height="30" />
+            </h:link>
+            <h:panelGroup layout="block" id="headerContent">
+                Gestión de avisos
+            </h:panelGroup>
+            <h:panelGroup layout="block" id="headerUser">
+            	<h:panelGroup layout="block" rendered="#{empty controlBean.usuarioActual}">
+		            <h:form>
+		            	<h:outputLink value="https://accounts.google.com/o/oauth2/v2/auth" class="btn btn-block btn-social btn-google" style="width: 175px;">
+	                        <span class="fa fa-google"></span>
+	                        <f:param name="scope" value="email profile" />
+	                        <f:param name="redirect_uri" value="http://localhost:8888/faces/loginSuccess.xhtml" />
+	                        <f:param name="response_type" value="code" />
+	                        <f:param name="client_id" value="893681487329-8djeugqf5ahn7t55b8dpnlnq466v05uf.apps.googleusercontent.com" />
+	                        <h:outputText value="Iniciar con Google" />
+	                    </h:outputLink>
+		            </h:form>
+	            </h:panelGroup>
+            	<h:panelGroup layout="block" rendered="#{not empty controlBean.usuarioActual}">
+			        <button style="background: #347cd8; border: 1px solid #1e4c86; color: #fff; border-radius: 5px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			        	#{controlBean.usuarioActual.email}
+			        </button>
+					<ul style="margin: -7px 10px 0 0" class="dropdown-menu pull-right">
+		                <li>
+		                	<h:form>
+		                		<h:commandLink style="padding: 10px; color: black;" value="Ver mis avisos" action="avisosUsuario?faces-redirect=true" />
+		                	</h:form>
+		                </li>
+		                <li a:role="separator" class="divider"></li>
+		                <li class="cerrarSesion">
+		                	<h:form>
+		                		<h:commandLink style="padding: 10px; color: black;" action="#{controlBean.doLogout()}">Cerrar sesión</h:commandLink>
+		                	</h:form>
+		                </li>
+		            </ul>
+            	</h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:body>
+</html>
+

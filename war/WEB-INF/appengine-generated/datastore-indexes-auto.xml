@@ -1,10 +1,4 @@
-<!-- Indices written at Tue, 17 Jan 2017 18:07:58 CET -->
+<!-- Indices written at Tue, 17 Jan 2017 18:47:58 CET -->
 
-<datastore-indexes>
+<datastore-indexes/>
 
-    <!-- Used 2 times in query history -->
-    <datastore-index kind="Aviso" ancestor="true" source="auto">
-        <property name="fechaCreacion" direction="asc"/>
-    </datastore-index>
-
-</datastore-indexes>

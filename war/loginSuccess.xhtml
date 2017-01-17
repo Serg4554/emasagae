@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+ 
+ <h:head>
+        <title>Sistema de Gestión de Avisos</title>
+        <link rel="stylesheet" type="text/css" href="includes/style/main.css" />
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!-- Compiled and minified Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+        <!-- Bootstrap social icons plugin -->
+        <link rel="stylesheet" href="includes/bootstrap-social-icons/bootstrap-social.css" />
+        <!-- Compiled and minified Bootstrap JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <!-- Font Awesome -->
+        <script src="https://use.fontawesome.com/26be38d20f.js"></script>
+    </h:head>
+    <h:body>
+    	<ui:include src="/includes/header.xhtml" />
+    	<h:panelGroup layout="block" id="content">
+	        #{controlBean.doGoogleLogin()}
+		</h:panelGroup>
+    </h:body>
+</html>

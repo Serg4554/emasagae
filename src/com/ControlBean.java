@@ -3,8 +3,11 @@ package com;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.googlecode.objectify.Key;
+
 import static com.OfyHelper.ofy;
+
 import com.googlecode.objectify.annotation.Load;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,10 +18,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -64,6 +69,7 @@ public class ControlBean implements Serializable {
 		error = "";
 		usuarioActual = null;
 		avisoSeleccionado = null;
+		operacionSeleccionada = null;
 		googleID = "";
 		googleToken = "";
 		emailUsuario = "";
@@ -76,6 +82,14 @@ public class ControlBean implements Serializable {
 
 	public void setAvisoSeleccionado(Aviso avisoSeleccionado) {
 		this.avisoSeleccionado = avisoSeleccionado;
+	}
+	
+	public Operacion getOperacionSeleccionada() {
+		return operacionSeleccionada;
+	}
+	
+	public void setOperacionSeleccionada(Operacion operacionSeleccionada) {
+		this.operacionSeleccionada = operacionSeleccionada;
 	}
 
 	public Usuario getUsuarioActual() {
@@ -166,10 +180,10 @@ public class ControlBean implements Serializable {
 	}
 
 	private List<Operacion> getListaOperacionesAviso(Aviso aviso) {
-		List<Operacion> operaciones = null;
+		ArrayList<Operacion> operaciones = null;
 		if (aviso != null) {
 			Key<Aviso> tAviso = Key.create(Aviso.class, aviso.getId());
-			operaciones = ofy().load().type(Operacion.class).ancestor(tAviso).list();
+			operaciones = new ArrayList<>(ofy().load().type(Operacion.class).ancestor(tAviso).order("fecha").list());
 		}
 		
 		return operaciones;
@@ -269,12 +283,9 @@ public class ControlBean implements Serializable {
 		error = "";
 		descripcion = "";
 		operacionSeleccionada = new Operacion();
+		//avisoSeleccionado
 		
 		return "editarOperacion?faces-redirect=true";
-	}
-	
-	public String doHola() {
-		return "index";
 	}
 	
 	public String doEditarOperacion(Operacion operacion) {
@@ -288,26 +299,41 @@ public class ControlBean implements Serializable {
 	public String doGuardarOperacion() {
 		error = "";
 		
-		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
-		operacionSeleccionada.setTOriginador(tUsuario);
+		
+		operacionSeleccionada.setOriginador(emailUsuario);
 		 
 		Key<Aviso> tAviso = Key.create(Aviso.class, avisoSeleccionado.getId());
 		operacionSeleccionada.setTAviso(tAviso);
-		operacionSeleccionada.setAviso(avisoSeleccionado);
+		//operacionSeleccionada.setAviso(avisoSeleccionado);
+		//ARREGLAR LO DE AVISO DE ARRIBA
 		//operacionSeleccionada.setOriginador();
 		//HACER LO DE ARRIBA
 		operacionSeleccionada.setFecha(new Date());
 	
 		if (descripcion != null && !descripcion.isEmpty()) {
-			avisoSeleccionado.setDescripcion(descripcion);
+			operacionSeleccionada.setDescripcion(descripcion);
 		} else {
 			error = "Debe especificar una descripción";
 			return "editarOperacion";
 		}
 		
-		ofy().save().entity(operacionSeleccionada).now();
 		
+		
+		ofy().save().entity(operacionSeleccionada);
+		
+		operacionSeleccionada = ofy().load().type(Operacion.class).ancestor(tAviso).order("fecha").list().get(ofy().load().type(Operacion.class).ancestor(tAviso).order("fecha").list().size() -1);
 		//ATENTO A ESTO
+		
+		Key<Operacion> tOperacion = Key.create(Operacion.class, operacionSeleccionada.getId());
+		Collection<Key<Operacion>> aux = avisoSeleccionado.getOperacionesCollection();
+		
+		if(aux == null) {
+			aux = new ArrayList<Key<Operacion>>();
+		}
+		aux.add(tOperacion);
+		avisoSeleccionado.setOperacionesCollection(aux);
+		
+		
 		listaOperaciones = this.getListaOperacionesAviso(avisoSeleccionado);
 		operacionSeleccionada = null;
 		
@@ -317,7 +343,7 @@ public class ControlBean implements Serializable {
 	
 	public String doBorrarOperacion(Operacion operacion) {
 		ofy().delete().entity(operacion).now();
-		//COMPLETAR Y HACER RETURN AL AVISO CONCRETO
+		
 		listaOperaciones = this.getListaOperacionesAviso(avisoSeleccionado);
 		return verAviso(avisoSeleccionado);
 	}
@@ -328,6 +354,15 @@ public class ControlBean implements Serializable {
 		listaAvisosUsuario = getAllAvisos(usuarioActual);
 		
 		return "index";
+	}
+	
+	public String verOperacion(Operacion operacion) {
+		if (operacion != null) {
+			operacionSeleccionada = operacion;
+			return "detalleOperacion";
+		} else {
+			return verAviso(avisoSeleccionado);
+		}
 	}
 
 	public void doGoogleLogin() {

@@ -3,7 +3,9 @@ package com;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,21 +20,23 @@ public class Operacion implements Serializable {
     
     @Parent
     private Key<Aviso> tAviso;
+    
     private Aviso aviso;
+    
+    @Index
     private Date fecha;
     private String descripcion;
-    private Key<Usuario> tOriginador;
-    private Usuario originador;
+    
+    private String originador;
 
     public Operacion() {
     	//Operación vacía
     }
     
-    public Operacion(Aviso aviso, Usuario originador, String descripcion, Date fecha) {
+    public Operacion(Aviso aviso, String originador, String descripcion, Date fecha) {
     	this.tAviso = Key.create(Aviso.class, aviso.getId());
     	this.aviso = aviso;
     	this.originador = originador;
-    	this.tOriginador = Key.create(Usuario.class, originador.getEmail());
     	this.descripcion = descripcion;
     	this.fecha = fecha;
     }
@@ -68,20 +72,12 @@ public class Operacion implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
-	public Key<Usuario> getTOriginador() {
-		return tOriginador;
-	}
-
-	public void setTOriginador(Key<Usuario> tOriginador) {
-		this.tOriginador = tOriginador;
-	}
 	
-	public Usuario getOriginador() {
+	public String getOriginador() {
 		return this.originador;
 	}
 	
-	public void setOriginador(Usuario originador) {
+	public void setOriginador(String originador) {
 		this.originador = originador;
 	}
 	

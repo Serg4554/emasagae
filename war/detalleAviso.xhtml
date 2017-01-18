@@ -33,7 +33,7 @@
 			
         	<h3>Descripción</h3>
 			#{controlBean.avisoSeleccionado.descripcion}<br/>
-			
+			<h:form>
 			<h3>Operaciones</h3>
 				<h:panelGroup layout="block" rendered="#{not empty controlBean.listaOperaciones}">
 				<h:dataTable value="#{controlBean.listaOperaciones}" var="operacion" border="2"  cellspacing="2"  class="table">   
@@ -41,7 +41,7 @@
 						<f:facet name="header">
 							Descripción
 						</f:facet>
-						#{operacion.descripcion}
+						<h:commandLink action="#{controlBean.verOperacion(operacion)}" value="#{operacion.descripcion}"/>
 					</h:column>  
 					<h:column headerClass="tableHeader">
 						<f:facet name="header">
@@ -50,16 +50,31 @@
 						<h:outputText value="#{operacion.fecha}" >
 							<f:convertDateTime pattern="dd-MM-yyyy HH:mm" timeZone="CET" />
 						</h:outputText>
-					</h:column>  
+					</h:column>
+					<h:column headerClass="tableHeader">
+						<f:facet name="header">
+							Acción
+						</f:facet>
+						<h:panelGroup layout="block" class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Seleccionar
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><h:commandLink action="#{controlBean.doEditarOperacion(operacion)}" value="Editar" /></li>
+                              <li><h:commandLink action="#{controlBean.doBorrarOperacion(operacion)}" value="Borrar" /></li>
+                            </ul>
+                        </h:panelGroup>
+					</h:column> 
 	        	</h:dataTable>
 	        </h:panelGroup>
+	        </h:form>
 	        <h:panelGroup layout="block" rendered="#{empty controlBean.listaOperaciones}">
 	        	No hay operaciones para este aviso
 	        </h:panelGroup> <br/>
 	        <br/>
 	        <h:form>
 	        	<h:commandButton action="#{controlBean.doNuevaOperacion()}" value="Crear Operación" class="btn btn-success" /><br/> <br/>
-	        	<h:commandButton action="#{controlBean.doHola()}" value="Crear Aviso" class="btn btn-success" />
 				<h:commandButton action="index?faces-redirect=true" value="Volver" class="btn btn-default" />
 			</h:form>
         </h:panelGroup>

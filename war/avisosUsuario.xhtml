@@ -49,7 +49,16 @@
 						<f:facet name="header">
 							Acción
 						</f:facet>
-						
+						<h:panelGroup layout="block" class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Seleccionar
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><h:commandLink action="#{controlBean.doEditar(aviso)}" value="Editar" /></li>
+                              <li><h:commandLink action="#{controlBean.doBorrar(aviso)}" value="Borrar" /></li>
+                            </ul>
+                        </h:panelGroup>
 					</h:column>
 				</h:dataTable>
 				

@@ -3,6 +3,7 @@ package com;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 import java.io.Serializable;
 import java.util.Collection;
@@ -18,10 +19,12 @@ public class Aviso implements Serializable {
     private Long id;
     
     @Parent
-    private Key<Usuario> tOriginador;;
+    private Key<Usuario> tOriginador;
+
+    @Index
+    private Date fechaCreacion;
     
     private Usuario originador;
-    private Date fechaCreacion;
     private String descripcion;
     private String calle;
     private int numero;

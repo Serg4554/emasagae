@@ -151,12 +151,12 @@ public class ControlBean implements Serializable {
 	}
 	
 	public List<Aviso> getAllAvisos() {
-		return new ArrayList<>(ofy().load().type(Aviso.class).list());
+		return new ArrayList<>(ofy().load().type(Aviso.class).order("fechaCreacion").list());
 	}
 	
 	public List<Aviso> getAllAvisos(Usuario usuario) {
 		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
-		ArrayList<Aviso> avisos = new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).list());
+		ArrayList<Aviso> avisos = new ArrayList<>(ofy().load().type(Aviso.class).ancestor(tUsuario).order("fechaCreacion").list());
 		
 		return avisos;
 	}
@@ -243,9 +243,28 @@ public class ControlBean implements Serializable {
 		}
 		
 		ofy().save().entity(avisoSeleccionado).now();
-		listaAvisos.add(avisoSeleccionado);
-		listaAvisosUsuario.add(avisoSeleccionado);
+		listaAvisos = getAllAvisos();
+		listaAvisosUsuario = getAllAvisos(usuarioActual);
 		avisoSeleccionado = null;
+		
+		return "index";
+	}
+
+	public String doEditar(Aviso aviso) {
+		error = "";
+		avisoSeleccionado = aviso;
+		calle = aviso.getCalle();
+		numero = ""+aviso.getNumero();
+		codigoPostal = ""+aviso.getCodigoPostal();
+		descripcion = aviso.getDescripcion();
+		
+		return "editarAviso";
+	}
+	
+	public String doBorrar(Aviso aviso) {
+		ofy().delete().entity(aviso).now();
+		listaAvisos = getAllAvisos();
+		listaAvisosUsuario = getAllAvisos(usuarioActual);
 		
 		return "index";
 	}

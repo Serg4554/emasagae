@@ -1,8 +1,8 @@
-<!-- Indices written at Wed, 18 Jan 2017 09:24:22 CET -->
+<!-- Indices written at Wed, 18 Jan 2017 10:37:30 CET -->
 
 <datastore-indexes>
 
-    <!-- Used 6 times in query history -->
+    <!-- Used 4 times in query history -->
     <datastore-index kind="Aviso" ancestor="true" source="auto">
         <property name="fechaCreacion" direction="asc"/>
     </datastore-index>

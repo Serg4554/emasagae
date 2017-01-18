@@ -18,10 +18,11 @@ public class Operacion implements Serializable {
     
     @Parent
     private Key<Aviso> tAviso;
-
+    private Aviso aviso;
     private Date fecha;
     private String descripcion;
-    private Key<Usuario> originador;
+    private Key<Usuario> tOriginador;
+    private Usuario originador;
 
     public Operacion() {
     	//Operación vacía
@@ -29,7 +30,9 @@ public class Operacion implements Serializable {
     
     public Operacion(Aviso aviso, Usuario originador, String descripcion, Date fecha) {
     	this.tAviso = Key.create(Aviso.class, aviso.getId());
-    	this.originador = Key.create(Usuario.class, originador.getEmail());
+    	this.aviso = aviso;
+    	this.originador = originador;
+    	this.tOriginador = Key.create(Usuario.class, originador.getEmail());
     	this.descripcion = descripcion;
     	this.fecha = fecha;
     }
@@ -66,14 +69,30 @@ public class Operacion implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Key<Usuario> getOriginador() {
-		return originador;
+	public Key<Usuario> getTOriginador() {
+		return tOriginador;
 	}
 
-	public void setOriginador(Key<Usuario> originador) {
+	public void setTOriginador(Key<Usuario> tOriginador) {
+		this.tOriginador = tOriginador;
+	}
+	
+	public Usuario getOriginador() {
+		return this.originador;
+	}
+	
+	public void setOriginador(Usuario originador) {
 		this.originador = originador;
 	}
-
+	
+	public Aviso getAviso() {
+		return this.aviso;
+	}
+	
+	public void setAviso(Aviso aviso) {
+		this.aviso = aviso;
+	}
+	
 	@Override
     public int hashCode() {
         int hash = 0;

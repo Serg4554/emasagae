@@ -40,6 +40,9 @@ public class ControlBean implements Serializable {
 	@Load
 	Usuario usuarioActual;
 	
+	@Load
+	Operacion operacionSeleccionada;
+	
 	String calle;
 	String numero;
 	String codigoPostal;
@@ -51,6 +54,7 @@ public class ControlBean implements Serializable {
 	List<Aviso> listaAvisos;
 	List<Aviso> listaAvisosUsuario;
 	List<Operacion> listaOperaciones;
+	
 
 	public ControlBean() {
 	}
@@ -259,6 +263,63 @@ public class ControlBean implements Serializable {
 		descripcion = aviso.getDescripcion();
 		
 		return "editarAviso";
+	}
+	
+	public String doNuevaOperacion() {
+		error = "";
+		descripcion = "";
+		operacionSeleccionada = new Operacion();
+		
+		return "editarOperacion?faces-redirect=true";
+	}
+	
+	public String doHola() {
+		return "index";
+	}
+	
+	public String doEditarOperacion(Operacion operacion) {
+		error = "";
+		operacionSeleccionada = operacion;
+		descripcion = operacion.getDescripcion();
+		
+		return "editarOperacion";
+	}
+
+	public String doGuardarOperacion() {
+		error = "";
+		
+		Key<Usuario> tUsuario = Key.create(Usuario.class, emailUsuario);
+		operacionSeleccionada.setTOriginador(tUsuario);
+		 
+		Key<Aviso> tAviso = Key.create(Aviso.class, avisoSeleccionado.getId());
+		operacionSeleccionada.setTAviso(tAviso);
+		operacionSeleccionada.setAviso(avisoSeleccionado);
+		//operacionSeleccionada.setOriginador();
+		//HACER LO DE ARRIBA
+		operacionSeleccionada.setFecha(new Date());
+	
+		if (descripcion != null && !descripcion.isEmpty()) {
+			avisoSeleccionado.setDescripcion(descripcion);
+		} else {
+			error = "Debe especificar una descripción";
+			return "editarOperacion";
+		}
+		
+		ofy().save().entity(operacionSeleccionada).now();
+		
+		//ATENTO A ESTO
+		listaOperaciones = this.getListaOperacionesAviso(avisoSeleccionado);
+		operacionSeleccionada = null;
+		
+		//Hacer return al aviso concreto
+		return verAviso(avisoSeleccionado);
+	}
+	
+	public String doBorrarOperacion(Operacion operacion) {
+		ofy().delete().entity(operacion).now();
+		//COMPLETAR Y HACER RETURN AL AVISO CONCRETO
+		listaOperaciones = this.getListaOperacionesAviso(avisoSeleccionado);
+		return verAviso(avisoSeleccionado);
 	}
 	
 	public String doBorrar(Aviso aviso) {

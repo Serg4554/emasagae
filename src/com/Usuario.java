@@ -16,7 +16,7 @@ public class Usuario implements Serializable {
     private String email;
 
     public Usuario() {
-        //Usuario vacío
+        //Usuario vacío 
     }
 
     public Usuario(String email) {

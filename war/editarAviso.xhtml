@@ -43,6 +43,12 @@
 	                <h:panelGroup layout="block" class="input-group" style="width: 500px">
 	                    <h:inputTextarea value="#{controlBean.descripcion}" class="form-control"></h:inputTextarea><br/>
 	                </h:panelGroup> <br/>
+	                
+	                <h:panelGroup layout="block" class="input-group" style="width: 500px">
+	                    <span class="input-group-addon">Etiqueta</span>
+	                    <h:inputText value="#{controlBean.etiqueta}" class="form-control" />
+	                </h:panelGroup> <br/>
+	                
 		            <h:commandButton value="Guardar" action="#{controlBean.doGuardarAviso()}" class="btn btn-success" />
 		            <h:commandButton style="margin-left: 10px;" action="index?faces-redirect=true" value="Volver" class="btn btn-default" />
 		        </h:form>

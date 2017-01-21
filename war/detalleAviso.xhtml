@@ -78,6 +78,23 @@
 				<h:commandButton action="index?faces-redirect=true" value="Volver" class="btn btn-default" />
 			</h:form>
         </h:panelGroup>
+        <h:form>
+		<script type="text/javascript">
+                function jsonFlickrApi(rsp){
+                    window.rsp = rsp;
+                    var s = "";
+                    
+                    photo = rsp.photos.photo[Math.floor(Math.random()*(rsp.photos.photo.length))];
+                    t_url = "http://farm" + photo.farm + ".static.flickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_z.jpg";
+                    p_url = "http://www.flickr.com/photos/" + photo.owner + "/" + photo.id;
+                    s += '<a href="' + p_url + '">' + '<img alt="' + photo.title + '" src="' + t_url + '" /> </a> <br />';
+
+                     document.writeln(s);
+                }
+            </script>
+            
+            <script src="https://api.flickr.com/services/rest/?method=flickr.photos.search&amp;format=json&amp;api_key=907cdf0a9e850bd2b0648a1715cc7fd7&amp;tags=#{controlBean.avisoSeleccionado.etiqueta}"></script>
+		</h:form>
     </h:body>
 </html>
 

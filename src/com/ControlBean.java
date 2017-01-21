@@ -40,25 +40,26 @@ public class ControlBean implements Serializable {
     private final String GOOGLE_SECRET = "uV0DD-f1y2AERZ4RqR0pNNo3";
     
 	@Load
-	Aviso avisoSeleccionado;
+	private Aviso avisoSeleccionado;
 
 	@Load
-	Usuario usuarioActual;
+	private Usuario usuarioActual;
 	
 	@Load
-	Operacion operacionSeleccionada;
+	private Operacion operacionSeleccionada;
 	
-	String calle;
-	String numero;
-	String codigoPostal;
-	String descripcion;
-	String emailUsuario;
-	String error;
-	String googleID;
-	String googleToken;
-	List<Aviso> listaAvisos;
-	List<Aviso> listaAvisosUsuario;
-	List<Operacion> listaOperaciones;
+	private String calle;
+	private String numero;
+	private String codigoPostal;
+	private String descripcion;
+	private String emailUsuario;
+	private String error;
+	private String googleID;
+	private String googleToken;
+	private List<Aviso> listaAvisos;
+	private List<Aviso> listaAvisosUsuario;
+	private List<Operacion> listaOperaciones;
+	private String etiqueta;
 	
 
 	public ControlBean() {
@@ -168,6 +169,14 @@ public class ControlBean implements Serializable {
 		this.listaOperaciones = listaOperaciones;
 	}
 	
+	public String getEtiqueta() {
+		return etiqueta;
+	}
+
+	public void setEtiqueta(String etiqueta) {
+		this.etiqueta = etiqueta;
+	}
+
 	public List<Aviso> getAllAvisos() {
 		return new ArrayList<>(ofy().load().type(Aviso.class).order("fechaCreacion").list());
 	}
@@ -257,6 +266,13 @@ public class ControlBean implements Serializable {
 			avisoSeleccionado.setDescripcion(descripcion);
 		} else {
 			error = "Debe especificar una descripción";
+			return "editarAviso";
+		}
+		
+		if (etiqueta != null && !etiqueta.isEmpty()) {
+			avisoSeleccionado.setEtiqueta(etiqueta);
+		} else {
+			error = "Debe especificar una etiqueta";
 			return "editarAviso";
 		}
 		
@@ -467,4 +483,5 @@ public class ControlBean implements Serializable {
 	    
 	    return "index?faces-redirect=true";
 	}
+	
 }

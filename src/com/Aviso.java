@@ -30,6 +30,7 @@ public class Aviso implements Serializable {
     private int numero;
     private int codigoPostal;
     private Collection<Key<Operacion>> operacionesCollection;
+    private String etiqueta;
 
     public Aviso() {
     	//Aviso vacío
@@ -114,6 +115,14 @@ public class Aviso implements Serializable {
 
 	public void setOperacionesCollection(Collection<Key<Operacion>> operacionesCollection) {
 		this.operacionesCollection = operacionesCollection;
+	}
+
+	public String getEtiqueta() {
+		return etiqueta;
+	}
+
+	public void setEtiqueta(String etiqueta) {
+		this.etiqueta = etiqueta;
 	}
 
 	@Override

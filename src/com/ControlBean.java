@@ -2,11 +2,14 @@ package com;
 
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 
 import static com.OfyHelper.ofy;
 
 import com.googlecode.objectify.annotation.Load;
+import com.gsonmaps.GoogleMaps;
+import com.gsonmaps.Result;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -60,6 +63,8 @@ public class ControlBean implements Serializable {
 	private List<Aviso> listaAvisosUsuario;
 	private List<Operacion> listaOperaciones;
 	private String etiqueta;
+	private double latitud;
+	private double longitud;
 	
 
 	public ControlBean() {
@@ -77,6 +82,46 @@ public class ControlBean implements Serializable {
 		listaAvisos = getAllAvisos();
     }
 
+	public void doGeocoding()
+	{
+		String respuesta = ""; //variable para almacenar la string de respuesta del servidor rest
+		URL urlPeticionRest = null; //Url de petición y generación de la string que la originará
+		String stringUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+		String calle = avisoSeleccionado.getCalle().trim(); 
+		calle = calle.replace(" ", "+");
+		String numero = Integer.toString(avisoSeleccionado.getNumero()).trim();
+		String codigoPostal = Integer.toString(avisoSeleccionado.getCodigoPostal()).trim();
+		stringUrl = stringUrl+calle+","+numero+","+codigoPostal;
+		try {
+			urlPeticionRest = new URL(stringUrl);
+		} catch (MalformedURLException e) {
+			System.err.println("Error al introducir al url");
+			e.printStackTrace();
+		}//creamos la url a geocodificar
+		try {
+			BufferedReader reader = new BufferedReader (new InputStreamReader (urlPeticionRest.openStream()));
+			String linea;//abrimos un reader para procesar la respuesta y la procesamos
+			while ((linea = reader.readLine())!=null)
+			{
+				respuesta+=linea;
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.err.println("Error al procesar respuesta");
+			e.printStackTrace();
+		}
+		//una vez tenemos la cadena JSON lo convertimos en un objeto JSON
+		
+		Gson gson = new Gson();
+		GoogleMaps resultado = gson.fromJson(respuesta, GoogleMaps.class);
+		
+		List<Result> listaResultados = resultado.getResults();
+		latitud = listaResultados.get(0).getGeometry().getLocation().getLat();
+		longitud = listaResultados.get(0).getGeometry().getLocation().getLng();
+	
+		//ya tenemos la longitud y la latitud en los atributos latitud y longitud del bean
+	}
+	
 	public Aviso getAvisoSeleccionado() {
 		return avisoSeleccionado;
 	}
@@ -275,6 +320,12 @@ public class ControlBean implements Serializable {
 			error = "Debe especificar una etiqueta";
 			return "editarAviso";
 		}
+		if (error.equals(""))
+		{//si ha llegado hasta aquí sin errores se añade la geolocalizacion
+			doGeocoding();
+			avisoSeleccionado.setLatitud(latitud);
+			avisoSeleccionado.setLongitud(longitud);
+		}
 		
 		ofy().save().entity(avisoSeleccionado).now();
 		listaAvisos = getAllAvisos();
@@ -396,8 +447,14 @@ public class ControlBean implements Serializable {
 
 				url = new URL("https://www.googleapis.com/oauth2/v4/token");
 				con = url.openConnection();
+				
+				ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+				
+				System.out.println("algo:"+ctx.getRequestContextPath());
+				System.out.flush();
+				
 				String urlParameters = "client_id=" + GOOGLE_ID
-						+ "&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Ffaces%2FloginSuccess.xhtml&client_secret=" + GOOGLE_SECRET + "&grant_type=authorization_code&code=" + code;
+						+ "&redirect_uri="+ctx.getRequestContextPath()+"%2FloginSuccess.xhtml&client_secret=" + GOOGLE_SECRET + "&grant_type=authorization_code&code=" + code;
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				int postDataLength = postData.length;
 
@@ -482,6 +539,22 @@ public class ControlBean implements Serializable {
 		listaAvisosUsuario = null;
 	    
 	    return "index?faces-redirect=true";
+	}
+
+	public double getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(double latitud) {
+		this.latitud = latitud;
+	}
+
+	public double getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(double longitud) {
+		this.longitud = longitud;
 	}
 	
 }

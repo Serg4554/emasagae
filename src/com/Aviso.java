@@ -31,6 +31,8 @@ public class Aviso implements Serializable {
     private int codigoPostal;
     private Collection<Key<Operacion>> operacionesCollection;
     private String etiqueta;
+    private Double latitud;
+    private Double longitud;
 
     public Aviso() {
     	//Aviso vacío
@@ -149,5 +151,21 @@ public class Aviso implements Serializable {
     public String toString() {
         return "rest.Aviso[ id=" + id + " ]";
     }
+
+	public Double getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(Double latitud) {
+		this.latitud = latitud;
+	}
+
+	public Double getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(Double longitud) {
+		this.longitud = longitud;
+	}
     
 }

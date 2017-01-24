@@ -1,53 +1,83 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
-    <h:head>
-        <title>Detalles de aviso</title>
-        <link rel="stylesheet" type="text/css" href="includes/style/main.css" />
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <!-- Compiled and minified Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
-        <!-- Bootstrap social icons plugin -->
-        <link rel="stylesheet" href="includes/bootstrap-social-icons/bootstrap-social.css" />
-        <!-- Compiled and minified Bootstrap JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/26be38d20f.js"></script>
-    </h:head>
-    <h:body>
-    	<ui:include src="/includes/header.xhtml" />
-        <h:panelGroup layout="block" id="content">
-        	<h3>Información detallada</h3>
-        	<b>ID:</b> #{controlBean.avisoSeleccionado.id}<br/>
-        	<b>Email del originador:</b> #{controlBean.avisoSeleccionado.originador.email}<br/>
-        	<b>Fecha de creacion:</b>
-        	<h:outputText value="#{controlBean.avisoSeleccionado.fechaCreacion}">
-        		<f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
-			</h:outputText><br/>
-			<b>Calle:</b> #{controlBean.avisoSeleccionado.calle}<br/>
-			<b>Número:</b> #{controlBean.avisoSeleccionado.numero}<br/>
-			<b>Código postal:</b> #{controlBean.avisoSeleccionado.codigoPostal}<br/>
-			
-        	<h3>Descripción</h3>
-			#{controlBean.avisoSeleccionado.descripcion}<br/>
-			<h:form>
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<title>Detalles de aviso</title>
+	<link rel="stylesheet" type="text/css" href="includes/style/main.css" />
+	<script type="text/javascript"
+		src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<!-- Compiled and minified Bootstrap CSS -->
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+		integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+		crossorigin="anonymous" />
+	<!-- Bootstrap social icons plugin -->
+	<link rel="stylesheet"
+		href="includes/bootstrap-social-icons/bootstrap-social.css" />
+	<!-- Compiled and minified Bootstrap JavaScript -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
+	<!-- Font Awesome -->
+	<script src="https://use.fontawesome.com/26be38d20f.js"></script>
+	<script type="text/javascript" charset=""
+		src="https://maps.googleapis.com/maps/api/js?v3.exp&amp;key=AIzaSyB2RpStrikgb975QOCkSfTcrt9ufzlVeBU">
+		
+	</script>
+	<script>
+		// 		var mapa;
+		// 		function showMap() {
+		// 			var options = {
+		// 				zoom : 16,
+		// 				center : new google.maps.LatLng(#{controlBean.avisoSeleccionado.latitud},#{controlBean.avisoSeleccionado.longitud})
+		// 			};
+		// 			mapa = new google.maps.Map(document.getElementById('map-canvas'),
+		// 					options);
+		// 		}
+
+		// 		google.maps.event.addDomListener(window, 'load', initialize);
+		
+	</script>
+</h:head>
+<h:body >
+	<ui:include src="/includes/header.xhtml" />
+	<h:panelGroup layout="block" id="content">
+		<h3>Información detallada</h3>
+		<b>ID:</b> #{controlBean.avisoSeleccionado.id}<br />
+		<b>Email del originador:</b> #{controlBean.avisoSeleccionado.originador.email}<br />
+		<b>Fecha de creacion:</b>
+		<h:outputText value="#{controlBean.avisoSeleccionado.fechaCreacion}">
+			<f:convertDateTime pattern="dd-MM-yyyy" timeZone="CET" />
+		</h:outputText>
+		<br />
+		<b>Calle:</b> #{controlBean.avisoSeleccionado.calle}<br />
+		<b>Número:</b> #{controlBean.avisoSeleccionado.numero}<br />
+		<b>Código postal:</b> #{controlBean.avisoSeleccionado.codigoPostal}<br />
+
+		<h3>Descripción</h3>
+			#{controlBean.avisoSeleccionado.descripcion}<br />
+		<h:form>
 			<h3>Operaciones</h3>
-				<h:panelGroup layout="block" rendered="#{not empty controlBean.listaOperaciones}">
-				<h:dataTable value="#{controlBean.listaOperaciones}" var="operacion" border="2"  cellspacing="2"  class="table">   
+			<h:panelGroup layout="block"
+				rendered="#{not empty controlBean.listaOperaciones}">
+				<h:dataTable value="#{controlBean.listaOperaciones}" var="operacion"
+					border="2" cellspacing="2" class="table">
 					<h:column headerClass="tableHeader">
 						<f:facet name="header">
 							Descripción
 						</f:facet>
-						<h:commandLink action="#{controlBean.verOperacion(operacion)}" value="#{operacion.descripcion}"/>
-					</h:column>  
+						<h:commandLink action="#{controlBean.verOperacion(operacion)}"
+							value="#{operacion.descripcion}" />
+					</h:column>
 					<h:column headerClass="tableHeader">
 						<f:facet name="header">
 							Fecha
 						</f:facet>
-						<h:outputText value="#{operacion.fecha}" >
+						<h:outputText value="#{operacion.fecha}">
 							<f:convertDateTime pattern="dd-MM-yyyy HH:mm" timeZone="CET" />
 						</h:outputText>
 					</h:column>
@@ -56,46 +86,82 @@
 							Acción
 						</f:facet>
 						<h:panelGroup layout="block" class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                Seleccionar
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><h:commandLink action="#{controlBean.doEditarOperacion(operacion)}" value="Editar" /></li>
-                              <li><h:commandLink action="#{controlBean.doBorrarOperacion(operacion)}" value="Borrar" /></li>
-                            </ul>
-                        </h:panelGroup>
-					</h:column> 
-	        	</h:dataTable>
-	        </h:panelGroup>
-	        </h:form>
-	        <h:panelGroup layout="block" rendered="#{empty controlBean.listaOperaciones}">
-	        	No hay operaciones para este aviso
-	        </h:panelGroup> <br/>
-	        <br/>
-	        <h:form>
-	        	<h:commandButton action="#{controlBean.doNuevaOperacion()}" value="Crear Operación" class="btn btn-success" /><br/> <br/>
-				<h:commandButton action="index?faces-redirect=true" value="Volver" class="btn btn-default" />
-			</h:form>
-        </h:panelGroup>
-        <h:form>
-		<script type="text/javascript">
-                function jsonFlickrApi(rsp){
-                    window.rsp = rsp;
-                    var s = "";
-                    
-                    photo = rsp.photos.photo[Math.floor(Math.random()*(rsp.photos.photo.length))];
-                    t_url = "http://farm" + photo.farm + ".static.flickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_z.jpg";
-                    p_url = "http://www.flickr.com/photos/" + photo.owner + "/" + photo.id;
-                    s += '<a href="' + p_url + '">' + '<img alt="' + photo.title + '" src="' + t_url + '" /> </a> <br />';
-
-                     document.writeln(s);
-                }
-            </script>
-            
-            <script src="https://api.flickr.com/services/rest/?method=flickr.photos.search&amp;format=json&amp;api_key=907cdf0a9e850bd2b0648a1715cc7fd7&amp;tags=#{controlBean.avisoSeleccionado.etiqueta}"></script>
+							<button class="btn btn-default dropdown-toggle" type="button"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								Seleccionar <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><h:commandLink
+										action="#{controlBean.doEditarOperacion(operacion)}"
+										value="Editar" /></li>
+								<li><h:commandLink
+										action="#{controlBean.doBorrarOperacion(operacion)}"
+										value="Borrar" /></li>
+							</ul>
+						</h:panelGroup>
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
 		</h:form>
-    </h:body>
+		<h:panelGroup layout="block"
+			rendered="#{empty controlBean.listaOperaciones}">
+	        	No hay operaciones para este aviso
+	        </h:panelGroup>
+		<br />
+		<br />
+		<h:form>
+			<h:commandButton action="#{controlBean.doNuevaOperacion()}"
+				value="Crear Operación" class="btn btn-success" />
+			<br />
+			<br />
+			<h:commandButton action="index?faces-redirect=true" value="Volver"
+				class="btn btn-default" />
+		</h:form>
+	</h:panelGroup>
+	<h:form>
+		<script type="text/javascript">
+			function jsonFlickrApi(rsp) {
+				window.rsp = rsp;
+				var s = "";
+
+				photo = rsp.photos.photo[Math.floor(Math.random()
+						* (rsp.photos.photo.length))];
+				t_url = "http://farm" + photo.farm + ".static.flickr.com/"
+						+ photo.server + "/" + photo.id + "_" + photo.secret
+						+ "_z.jpg";
+				p_url = "http://www.flickr.com/photos/" + photo.owner + "/"
+						+ photo.id;
+				s += '<a href="' + p_url + '">'
+						+ '<img alt="' + photo.title + '" src="' + t_url + '" /> </a> <br />';
+
+				document.writeln(s);
+			}
+		</script>
+
+		<script
+			src="https://api.flickr.com/services/rest/?method=flickr.photos.search&amp;format=json&amp;api_key=907cdf0a9e850bd2b0648a1715cc7fd7&amp;tags=#{controlBean.avisoSeleccionado.etiqueta}"></script>
+
+		<div id="map-canvas" style="width: 640px; height: 480px;" />
+	</h:form>
+	<script>
+		
+		var myLatlng = new google.maps.LatLng(#{controlBean.avisoSeleccionado.latitud},#{controlBean.avisoSeleccionado.longitud});
+		var mapOptions = {
+			zoom : 16,
+			center : myLatlng
+		}
+		var map = new google.maps.Map(document.getElementById("map-canvas"),
+				mapOptions);
+
+		var marker = new google.maps.Marker({
+			position : myLatlng,
+			title : "#{controlBean.avisoSeleccionado.descripcion}"
+		});
+
+		// To add the marker to the map, call setMap();
+		marker.setMap(map);
+	</script>
+</h:body>
 </html>
 
 

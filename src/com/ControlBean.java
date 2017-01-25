@@ -85,7 +85,7 @@ public class ControlBean implements Serializable {
 	public void doGeocoding()
 	{
 		String respuesta = ""; //variable para almacenar la string de respuesta del servidor rest
-		URL urlPeticionRest = null; //Url de petición y generación de la string que la originará
+		URL urlPeticionRest = null; //Url de peticiï¿½n y generaciï¿½n de la string que la originarï¿½
 		String stringUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 		String calle = avisoSeleccionado.getCalle().trim(); 
 		calle = calle.replace(" ", "+");
@@ -116,9 +116,13 @@ public class ControlBean implements Serializable {
 		GoogleMaps resultado = gson.fromJson(respuesta, GoogleMaps.class);
 		
 		List<Result> listaResultados = resultado.getResults();
-		latitud = listaResultados.get(0).getGeometry().getLocation().getLat();
-		longitud = listaResultados.get(0).getGeometry().getLocation().getLng();
-	
+		if(!listaResultados.isEmpty()) {
+			latitud = listaResultados.get(0).getGeometry().getLocation().getLat();
+			longitud = listaResultados.get(0).getGeometry().getLocation().getLng();
+		} else {
+			latitud = 0;
+			longitud = 0;
+		}
 		//ya tenemos la longitud y la latitud en los atributos latitud y longitud del bean
 	}
 	
@@ -321,7 +325,7 @@ public class ControlBean implements Serializable {
 			return "editarAviso";
 		}
 		if (error.equals(""))
-		{//si ha llegado hasta aquí sin errores se añade la geolocalizacion
+		{//si ha llegado hasta aquï¿½ sin errores se aï¿½ade la geolocalizacion
 			doGeocoding();
 			avisoSeleccionado.setLatitud(latitud);
 			avisoSeleccionado.setLongitud(longitud);
@@ -380,7 +384,7 @@ public class ControlBean implements Serializable {
 		if (descripcion != null && !descripcion.isEmpty()) {
 			operacionSeleccionada.setDescripcion(descripcion);
 		} else {
-			error = "Debe especificar una descripción";
+			error = "Debe especificar una descripciï¿½n";
 			return "editarOperacion";
 		}
 		
@@ -431,7 +435,14 @@ public class ControlBean implements Serializable {
 			return verAviso(avisoSeleccionado);
 		}
 	}
-
+	
+	public String getSuccessUrl() {
+		return FacesContext.getCurrentInstance().getExternalContext().getRequestScheme() + "://" +
+				FacesContext.getCurrentInstance().getExternalContext().getRequestServerName() + ":" +
+				FacesContext.getCurrentInstance().getExternalContext().getRequestServerPort() +
+				"/faces/loginSuccess.xhtml";
+	}
+	
 	public void doGoogleLogin() {
 		try {
             HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -448,13 +459,9 @@ public class ControlBean implements Serializable {
 				url = new URL("https://www.googleapis.com/oauth2/v4/token");
 				con = url.openConnection();
 				
-				ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
-				
-				System.out.println("algo:"+ctx.getRequestContextPath());
-				System.out.flush();
-				
-				String urlParameters = "client_id=" + GOOGLE_ID
-						+ "&redirect_uri="+ctx.getRequestContextPath()+"%2FloginSuccess.xhtml&client_secret=" + GOOGLE_SECRET + "&grant_type=authorization_code&code=" + code;
+				String urlParameters = "client_id=" + GOOGLE_ID + "&redirect_uri="+ getSuccessUrl() +
+						"&client_secret=" + GOOGLE_SECRET + "&grant_type=authorization_code&code="+ code;
+				System.out.println(urlParameters);
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				int postDataLength = postData.length;
 

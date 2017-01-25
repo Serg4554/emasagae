@@ -18,7 +18,7 @@
 		            	<h:outputLink value="https://accounts.google.com/o/oauth2/v2/auth" class="btn btn-block btn-social btn-google" style="width: 175px;">
 	                        <span class="fa fa-google"></span>
 	                        <f:param name="scope" value="email profile" />
-	                        <f:param name="redirect_uri" value="http://localhost:8888/faces/loginSuccess.xhtml" />
+	                        <f:param name="redirect_uri" value="#{controlBean.getSuccessUrl()}" />
 	                        <f:param name="response_type" value="code" />
 	                        <f:param name="client_id" value="893681487329-8djeugqf5ahn7t55b8dpnlnq466v05uf.apps.googleusercontent.com" />
 	                        <h:outputText value="Iniciar con Google" />
